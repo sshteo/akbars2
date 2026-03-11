@@ -1,0 +1,120 @@
+﻿<Window x:Class="akbars.Views.Worker.MainWorker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ак Барс Мед — Сотрудник"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя часть -->
+        <StackPanel Grid.Row="0">
+
+            <Border Style="{StaticResource LogoPanel}">
+                <Image Source="/Resources/icon.png"
+                       Height="90"
+                       HorizontalAlignment="Center"/>
+            </Border>
+
+            <TextBlock x:Name="HelloText"
+                       Style="{StaticResource TitleText}"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,20"/>
+
+        </StackPanel>
+
+        <!-- Основная часть -->
+        <Grid Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Левая часть (информация) -->
+            <Border Style="{StaticResource CardStyle}"
+        Margin="0,0,20,0">
+
+                <StackPanel>
+
+                    <TextBlock Text="Информация о сотруднике"
+                   Style="{StaticResource TitleText}"
+                   Margin="0,0,0,20"/>
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Фамилия:" Grid.Row="0"/>
+                        <TextBlock x:Name="LastNameText" Grid.Row="0" Grid.Column="1"/>
+
+                        <TextBlock Text="Имя:" Grid.Row="1"/>
+                        <TextBlock x:Name="FirstNameText" Grid.Row="1" Grid.Column="1"/>
+
+                        <TextBlock Text="Отчество:" Grid.Row="2"/>
+                        <TextBlock x:Name="MiddleNameText" Grid.Row="2" Grid.Column="1"/>
+
+                        <TextBlock Text="Email:" Grid.Row="3"/>
+                        <TextBlock x:Name="EmailText" Grid.Row="3" Grid.Column="1"/>
+
+                        <TextBlock Text="Телефон:" Grid.Row="4"/>
+                        <TextBlock x:Name="PhoneText" Grid.Row="4" Grid.Column="1"/>
+
+                        <TextBlock Text="Отдел:" Grid.Row="5"/>
+                        <TextBlock x:Name="DepartmentText" Grid.Row="5" Grid.Column="1"/>
+
+                        <TextBlock Text="Роль:" Grid.Row="6"/>
+                        <TextBlock x:Name="RoleText" Grid.Row="6" Grid.Column="1"/>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- Правая часть (кнопки) -->
+            <Border Grid.Column="1"
+                    Style="{StaticResource CardStyle}">
+
+                <StackPanel>
+
+                    <TextBlock Text="Действия"
+                               Style="{StaticResource TitleText}"/>
+
+                    <Button Content="Изменить информацию"
+                            Click="EditProfile_Click"/>
+
+                    <Button Content="Мои заявки"
+                            Click="Tickets_Click"/>
+
+                   
+
+                    <Button Content="Выйти"
+                            Click="Logout_Click"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</Window>

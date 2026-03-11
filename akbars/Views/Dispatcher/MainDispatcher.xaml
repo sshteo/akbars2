@@ -1,0 +1,102 @@
+﻿<Window x:Class="akbars.Views.Dispatcher.MainDispatcher"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Ак Барс Мед — Диспетчер"
+        WindowStartupLocation="CenterScreen"
+         Loaded="MainDispatcher_Loaded"
+    Height="800" Width="900">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя часть: приветствие -->
+        <StackPanel Grid.Row="0">
+            <Border Style="{StaticResource LogoPanel}">
+                <Image Source="/Resources/icon.png"
+                       Height="90"
+                       HorizontalAlignment="Center"/>
+            </Border>
+
+            <TextBlock x:Name="HelloText"
+                       Style="{StaticResource TitleText}"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,20"/>
+        </StackPanel>
+
+        <!-- Основная часть -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions
+>
+
+            <!-- Левая часть: статистика заявок -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,0">
+                <StackPanel>
+                    <TextBlock Text="Статистика заявок"
+                               Style="{StaticResource TitleText}"
+                               Margin="0,0,0,20"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Новые:" Grid.Row="0"/>
+                        <TextBlock x:Name="NewTicketsText" Grid.Row="0" Grid.Column="1"/>
+
+                        <TextBlock Text="В работе:" Grid.Row="1"/>
+                        <TextBlock x:Name="InProgressTicketsText" Grid.Row="1" Grid.Column="1"/>
+
+                        <TextBlock Text="Выполнено:" Grid.Row="2"/>
+                        <TextBlock x:Name="CompletedTicketsText" Grid.Row="2" Grid.Column="1"/>
+
+                        <TextBlock Text="Отменено:" Grid.Row="3"/>
+                        <TextBlock x:Name="CancelledTicketsText" Grid.Row="3" Grid.Column="1"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Правая часть: кнопки действий -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" >
+                <StackPanel  >
+                    <TextBlock Text="Действия" Style="{StaticResource TitleText}"/>
+
+                    <Button Content="Изменить данные"
+                            Click="EditProfile_Click"
+                            Margin="0,5,0,5"/>
+
+                    <Button Content="Сотрудники"
+                            Click="Employees_Click"
+                            Margin="0,5,0,5"/>
+
+                   
+                    <Button Content="Исполнители"
+                            Click="Workers_Click"
+                            Margin="0,5,0,5"/>
+
+                    <Button Content="Заявки"
+                            Click="AssignTickets_Click"
+                            Margin="0,5,0,5"/>
+
+                    <Button Content="Выйти"
+                            Click="Logout_Click"
+                            Margin="0,20,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
