@@ -1,85 +1,61 @@
 ﻿<Window x:Class="akbars.Views.Dispatcher.EditProfileDispetcher"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Редактирование профиля"
-        Height="500"
-        Width="600"
-        WindowStartupLocation="CenterScreen">
-
-    <Grid Margin="30">
-
+        Title="Профиль пользователя"
+        Width="760"
+        Height="620"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок -->
-        <TextBlock Text="Редактирование профиля"
-                   FontSize="26"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,25"/>
+        <StackPanel Margin="0,0,0,18">
+            <TextBlock Text="Профиль пользователя" Style="{StaticResource TitleText}" Margin="0,0,0,8"/>
+            <TextBlock Text="Обновите контактные данные и отдел. Роль и логин управляются централизованно." Style="{StaticResource SubtitleText}"/>
+        </StackPanel>
 
-        <!-- Форма -->
-        <Border Grid.Row="1"
-                Padding="25"
-                CornerRadius="10"
-                BorderBrush="#ddd"
-                BorderThickness="1">
-
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}">
             <Grid>
-
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="45"/>
-                    <RowDefinition Height="45"/>
-                    <RowDefinition Height="45"/>
-                    <RowDefinition Height="45"/>
-                    <RowDefinition Height="45"/>
-                </Grid.RowDefinitions>
+                <StackPanel Margin="0,0,12,0">
+                    <TextBlock Text="Фамилия" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="LastNameBox"/>
 
-                <TextBlock Text="Фамилия:" VerticalAlignment="Center"/>
-                <TextBox x:Name="LastNameBox" Grid.Column="1"/>
+                    <TextBlock Text="Имя" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="FirstNameBox"/>
 
-                <TextBlock Text="Имя:" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBox x:Name="FirstNameBox" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="Отчество" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="MiddleNameBox"/>
 
-                <TextBlock Text="Отчество:" Grid.Row="2" VerticalAlignment="Center"/>
-                <TextBox x:Name="MiddleNameBox" Grid.Row="2" Grid.Column="1"/>
+                    <TextBlock Text="Отдел" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="DepartmentBox"/>
+                </StackPanel>
 
-                <TextBlock Text="Email:" Grid.Row="3" VerticalAlignment="Center"/>
-                <TextBox x:Name="EmailBox" Grid.Row="3" Grid.Column="1"/>
+                <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                    <TextBlock Text="Email" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="EmailBox"/>
 
-                <TextBlock Text="Телефон:" Grid.Row="4" VerticalAlignment="Center"/>
-                <TextBox x:Name="PhoneBox" Grid.Row="4" Grid.Column="1"/>
+                    <TextBlock Text="Телефон" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="PhoneBox"/>
 
+                    <TextBlock Text="Справка" Style="{StaticResource FieldLabelStyle}"/>
+                    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="14" Padding="14">
+                        <TextBlock Text="После сохранения актуальные данные будут использованы на dashboard и в очередях заявок." Style="{StaticResource SubtitleText}"/>
+                    </Border>
+                </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Кнопки -->
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,20,0,0">
-
-            <Button Content="Сохранить"
-                    Width="140"
-                    Height="40"
-                    Margin="0,10,10,0"
-                    Click="Save_Click"/>
-
-            <Button Content="Отмена"
-                    Width="120"
-                    Height="40"
-                    Click="Cancel_Click"/>
-
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource SecondaryButtonStyle}" Content="Отмена" Width="140" Click="Cancel_Click"/>
+            <Button Content="Сохранить профиль" Width="180" Click="Save_Click"/>
         </StackPanel>
-
     </Grid>
-
 </Window>

@@ -1,45 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Collections.Generic;
 using akbars.Data;
 using akbars.Models;
 using Npgsql;
-using System.Collections.Generic;
 
 namespace akbars.Repositories
 {
-    public class TicketTypeRepository
+    public class TicketTypeRepository : RepositoryBase, ITicketTypeRepository
     {
-        private readonly Database _database = new Database();
+        public TicketTypeRepository(Database database) : base(database)
+        {
+        }
 
         public List<TicketType> GetTypes()
         {
-            var list = new List<TicketType>();
+            var types = new List<TicketType>();
 
-            using (var conn = _database.GetConnection())
+            using (var conn = Database.GetConnection())
             {
                 conn.Open();
-
-                string sql = "SELECT id, name FROM ticket_types";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
+                using (var cmd = new NpgsqlCommand("SELECT id, name FROM ticket_types ORDER BY id", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        list.Add(new TicketType
+                        types.Add(new TicketType
                         {
                             Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
+                            Name = ReadNullableString(reader, 1)
                         });
                     }
                 }
             }
 
-            return list;
+            return types;
+        }
+
+        public void AddType(string name)
+        {
+            using (var conn = Database.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("INSERT INTO ticket_types (name) VALUES (@name)", conn))
+                {
+                    cmd.Parameters.AddWithValue("name", name);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
     }
-}

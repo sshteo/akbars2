@@ -1,25 +1,24 @@
-﻿using akbars.Data;
+﻿using System.Collections.Generic;
+using akbars.Data;
 using akbars.Models;
 using Npgsql;
-using System.Collections.Generic;
 
 namespace akbars.Repositories
 {
-    public class RoleRepository
+    public class RoleRepository : RepositoryBase, IRoleRepository
     {
-        private readonly Database _database = new Database();
+        public RoleRepository(Database database) : base(database)
+        {
+        }
 
         public List<Role> GetRoles()
         {
             var roles = new List<Role>();
 
-            using (var connection = _database.GetConnection())
+            using (var conn = Database.GetConnection())
             {
-                connection.Open();
-
-                string sql = "SELECT id, name, description FROM roles";
-
-                using (var cmd = new NpgsqlCommand(sql, connection))
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("SELECT id, name, description FROM roles ORDER BY id", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -27,8 +26,8 @@ namespace akbars.Repositories
                         roles.Add(new Role
                         {
                             Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Description = reader.IsDBNull(2) ? null : reader.GetString(2)
+                            Name = ReadNullableString(reader, 1),
+                            Description = ReadNullableString(reader, 2)
                         });
                     }
                 }
@@ -37,4 +36,3 @@ namespace akbars.Repositories
             return roles;
         }
     }
-}

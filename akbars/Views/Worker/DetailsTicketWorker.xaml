@@ -1,12 +1,115 @@
 ﻿<Window x:Class="akbars.Views.Worker.DetailsTicketWorker"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:akbars.Views.Worker"
-        mc:Ignorable="d"
-        Title="DetailsTicketWorker" Height="450" Width="800">
-    <Grid>
-        
+        Title="Карточка заявки"
+        Width="900"
+        Height="700"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,16">
+            <TextBlock x:Name="WindowTitleText" Style="{StaticResource TitleText}" Margin="0,0,0,8"/>
+            <TextBlock x:Name="WindowSubtitleText" Style="{StaticResource SubtitleText}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,16,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Номер" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="TicketIdText" Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="1" Text="Статус" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="StatusText" Grid.Row="1" Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="2" Text="Приоритет" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="PriorityText" Grid.Row="2" Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="3" Text="Тип" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="TypeText" Grid.Row="3" Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="4" Text="Автор" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="AuthorText" Grid.Row="4" Grid.Column="1"/>
+
+                        <TextBlock Grid.Row="5" Text="Исполнитель" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="ExecutorText" Grid.Row="5" Grid.Column="1"/>
+                    </Grid>
+
+                    <StackPanel Grid.Row="1" Margin="0,20,0,14">
+                        <TextBlock Text="Краткое описание" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="ShortDescriptionText" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Подробности" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="DetailedDescriptionText" Style="{StaticResource SubtitleText}" Foreground="{StaticResource InkBrush}"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Создана: " Style="{StaticResource FieldLabelStyle}" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="CreatedAtText" Margin="0,0,24,0"/>
+                            <TextBlock Text="Обновлена: " Style="{StaticResource FieldLabelStyle}" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="UpdatedAtText"/>
+                        </StackPanel>
+                        <TextBlock x:Name="CompletedAtText" Grid.Row="1" Style="{StaticResource SubtitleText}" Margin="0,10,0,12"/>
+                        <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}" CornerRadius="14" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="История изменений" Style="{StaticResource SectionTitleText}" Margin="0,0,0,8"/>
+                                <ListBox x:Name="HistoryList" BorderThickness="0" Background="Transparent"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Действия исполнителя" Style="{StaticResource SectionTitleText}"/>
+                    <TextBlock x:Name="ActionHintText" Style="{StaticResource SubtitleText}" Margin="0,0,0,12"/>
+                    <TextBlock Text="Комментарий к действию" Style="{StaticResource FieldLabelStyle}"/>
+                    <TextBox x:Name="ActionNoteBox" Height="150" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                    <Button x:Name="StartButton" Content="Взять в работу" Click="Start_Click"/>
+                    <Button x:Name="CompleteButton" Content="Завершить" Click="Complete_Click"/>
+                    <Button x:Name="CancelButton" Style="{StaticResource DangerButtonStyle}" Content="Отменить заявку" Click="Cancel_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource SecondaryButtonStyle}" Content="Закрыть" Width="140" Click="Close_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

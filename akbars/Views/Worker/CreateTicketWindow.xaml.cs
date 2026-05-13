@@ -1,106 +1,63 @@
-﻿using Npgsql;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows;
+using akbars.Models;
+using akbars.Services;
 
 namespace akbars.Views.Worker
 {
     public partial class CreateTicketWindow : Window
     {
-        private int currentUserId;
+        private readonly SessionContext _session;
 
-        private Dictionary<string, int> priorityMap = new Dictionary<string, int>();
-        private Dictionary<string, int> typeMap = new Dictionary<string, int>();
-
-        public CreateTicketWindow(int userId)
+        public CreateTicketWindow(SessionContext session)
         {
             InitializeComponent();
-            currentUserId = userId;
-
-            LoadData();
+            _session = session;
+            LoadLookups();
         }
 
-        private void LoadData()
+        private void LoadLookups()
         {
-            var db = new Data.Database();
+            TypeBox.ItemsSource = AppServices.LookupService.GetTicketTypes();
+            PriorityBox.ItemsSource = AppServices.LookupService.GetPriorities();
 
-            using (var conn = db.GetConnection())
+            if (TypeBox.Items.Count > 0)
             {
-                conn.Open();
-
-                // типы неисправностей
-                var typeCmd = new NpgsqlCommand("SELECT id, name FROM ticket_types", conn);
-                var typeReader = typeCmd.ExecuteReader();
-
-                while (typeReader.Read())
-                {
-                    int id = typeReader.GetInt32(0);
-                    string name = typeReader.GetString(1);
-
-                    typeMap[name] = id;
-                    TypeBox.Items.Add(name);
-                }
-
-                typeReader.Close();
-
-                // приоритеты
-                var prCmd = new NpgsqlCommand("SELECT id, name FROM priorities", conn);
-                var prReader = prCmd.ExecuteReader();
-
-                while (prReader.Read())
-                {
-                    int id = prReader.GetInt32(0);
-                    string name = prReader.GetString(1);
-
-                    priorityMap[name] = id;
-                    PriorityBox.Items.Add(name);
-                }
+                TypeBox.SelectedIndex = 0;
             }
 
-            TypeBox.SelectedIndex = 0;
-            PriorityBox.SelectedIndex = 1;
+            if (PriorityBox.Items.Count > 0)
+            {
+                PriorityBox.SelectedIndex = 0;
+            }
         }
 
         private void Create_Click(object sender, RoutedEventArgs e)
         {
-            string problem = ProblemBox.Text;
-
-            if (string.IsNullOrWhiteSpace(problem))
+            try
             {
-                MessageBox.Show("Введите описание проблемы");
-                return;
+                var priority = PriorityBox.SelectedItem as Priority;
+                var type = TypeBox.SelectedItem as TicketType;
+
+                AppServices.TicketService.CreateTicket(
+                    _session.UserId,
+                    ShortDescriptionBox.Text,
+                    DetailedDescriptionBox.Text,
+                    priority == null ? 0 : priority.Id,
+                    type == null ? 0 : type.Id);
+
+                MessageBox.Show("Заявка создана.", "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+                DialogResult = true;
+                Close();
             }
-
-            string typeName = TypeBox.SelectedItem.ToString();
-            string priorityName = PriorityBox.SelectedItem.ToString();
-
-            int typeId = typeMap[typeName];
-            int priorityId = priorityMap[priorityName];
-
-            var db = new Data.Database();
-
-            using (var conn = db.GetConnection())
+            catch (Exception ex)
             {
-                conn.Open();
-
-                string sql = @"
-                INSERT INTO tickets
-                (author_id, short_description, type_id, priority_id, status_id)
-                VALUES
-                (@author, @desc, @type, @priority, 1)";
-
-                var cmd = new NpgsqlCommand(sql, conn);
-
-                cmd.Parameters.AddWithValue("author", currentUserId);
-                cmd.Parameters.AddWithValue("desc", problem);
-                cmd.Parameters.AddWithValue("type", typeId);
-                cmd.Parameters.AddWithValue("priority", priorityId);
-
-                cmd.ExecuteNonQuery();
+                MessageBox.Show(ex.Message, "Не удалось создать заявку", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
 
-            MessageBox.Show("Заявка создана");
-
-            this.Close();
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
-}

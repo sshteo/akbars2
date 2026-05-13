@@ -1,114 +1,54 @@
-﻿using Npgsql;
-using System;
+﻿using System;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using akbars.Models;
+using akbars.Services;
 
 namespace akbars.Views.Dispatcher
 {
     public partial class AssignExecutorWindow : Window
     {
-        private readonly int ticketId;
+        private readonly int _ticketId;
+        private readonly SessionContext _session;
 
-        public AssignExecutorWindow(int ticketId)
+        public AssignExecutorWindow(int ticketId, SessionContext session)
         {
             InitializeComponent();
-            this.ticketId = ticketId;
+            _ticketId = ticketId;
+            _session = session;
             LoadExecutors();
         }
 
         private void LoadExecutors()
         {
-            ExecutorCombo.Items.Clear();
-            ExecutorCombo.Items.Add("Выберите исполнителя");
+            ExecutorCombo.ItemsSource = AppServices.UserService.GetUsers(2)
+                .OrderBy(user => user.LastName)
+                .ToList();
 
-            var db = new Data.Database();
-            using (var conn = db.GetConnection())
+            if (ExecutorCombo.Items.Count > 0)
             {
-                conn.Open();
-
-                const string sql = @"
-                    SELECT id, 
-                           first_name || ' ' || last_name AS full_name 
-                    FROM users 
-                    WHERE role_id = 2
-                    ORDER BY last_name, first_name";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        int id = reader.GetInt32(0);
-                        string fullName = reader.GetString(1);
-
-                        var executorItem = new ExecutorItem
-                        {
-                            Id = id,
-                            DisplayName = fullName + " (ID: " + id + ")"
-                        };
-
-                        ExecutorCombo.Items.Add(executorItem);
-                    }
-                }
+                ExecutorCombo.SelectedIndex = 0;
             }
-
-            ExecutorCombo.SelectedIndex = 0;
         }
 
         private void Assign_Click(object sender, RoutedEventArgs e)
         {
-            if (ExecutorCombo.SelectedIndex <= 0)
+            var user = ExecutorCombo.SelectedItem as User;
+            if (user == null)
             {
-                MessageBox.Show("Выберите исполнителя");
+                MessageBox.Show("Выберите исполнителя.", "Нет выбора", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
-            var selectedItem = ExecutorCombo.SelectedItem as ExecutorItem;
-            if (selectedItem == null)
-            {
-                MessageBox.Show("Выберите исполнителя");
-                return;
-            }
-
-            int executorId = selectedItem.Id;
 
             try
             {
-                var db = new Data.Database();
-                using (var conn = db.GetConnection())
-                {
-                    conn.Open();
-
-                    const string sql = @"
-                        UPDATE tickets 
-                        SET executor_id = @executor,
-                            status_id = 2,
-                            updated_at = NOW()
-                        WHERE id = @ticket";
-
-                    using (var cmd = new NpgsqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("executor", executorId);
-                        cmd.Parameters.AddWithValue("ticket", ticketId);
-
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("Исполнитель успешно назначен!");
-                            DialogResult = true;
-                            Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Не удалось обновить заявку");
-                        }
-                    }
-                }
+                AppServices.TicketService.AssignTicket(_ticketId, user.Id, _session.UserId);
+                DialogResult = true;
+                Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка:\n" + ex.Message);
+                MessageBox.Show("Не удалось назначить исполнителя: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -117,15 +57,3 @@ namespace akbars.Views.Dispatcher
             Close();
         }
     }
-
-    public class ExecutorItem
-    {
-        public int Id { get; set; }
-        public string DisplayName { get; set; }
-
-        public override string ToString()
-        {
-            return DisplayName ?? "";
-        }
-    }
-}

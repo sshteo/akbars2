@@ -1,97 +1,75 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Npgsql;
-
+using akbars.Models;
+using akbars.Services;
 
 namespace akbars.Views.Dispatcher
 {
     public partial class EditProfileDispetcher : Window
     {
-        private int userId;
+        private readonly SessionContext _session;
 
-        public EditProfileDispetcher(int id)
+        public EditProfileDispetcher(SessionContext session)
         {
             InitializeComponent();
-            userId = id;
-
+            _session = session;
             LoadUser();
         }
 
         private void LoadUser()
         {
-            var db = new Data.Database();
-
-            using (var conn = db.GetConnection())
+            var user = AppServices.UserService.GetUser(_session.UserId);
+            if (user == null)
             {
-                conn.Open();
-
-                string sql = @"SELECT last_name, first_name, middle_name, email, phone 
-                               FROM users
-                               WHERE id = @id";
-
-                var cmd = new NpgsqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("id", userId);
-
-                var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    LastNameBox.Text = reader.GetString(0);
-                    FirstNameBox.Text = reader.GetString(1);
-                    MiddleNameBox.Text = reader.IsDBNull(2) ? "" : reader.GetString(2);
-                    EmailBox.Text = reader.GetString(3);
-                    PhoneBox.Text = reader.IsDBNull(4) ? "" : reader.GetString(4);
-                }
+                MessageBox.Show("Пользователь не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Close();
+                return;
             }
+
+            LastNameBox.Text = user.LastName;
+            FirstNameBox.Text = user.FirstName;
+            MiddleNameBox.Text = user.MiddleName;
+            DepartmentBox.Text = user.Department;
+            EmailBox.Text = user.Email;
+            PhoneBox.Text = user.Phone;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            var db = new Data.Database();
-
-            using (var conn = db.GetConnection())
+            try
             {
-                conn.Open();
+                var user = new User
+                {
+                    Id = _session.UserId,
+                    LastName = LastNameBox.Text.Trim(),
+                    FirstName = FirstNameBox.Text.Trim(),
+                    MiddleName = MiddleNameBox.Text.Trim(),
+                    Department = DepartmentBox.Text.Trim(),
+                    Email = EmailBox.Text.Trim(),
+                    Phone = PhoneBox.Text.Trim()
+                };
 
-                string sql = @"UPDATE users
-                               SET last_name=@ln,
-                                   first_name=@fn,
-                                   middle_name=@mn,
-                                   email=@em,
-                                   phone=@ph
-                               WHERE id=@id";
+                AppServices.UserService.UpdateProfile(user);
+                _session.LastName = user.LastName;
+                _session.FirstName = user.FirstName;
+                _session.MiddleName = user.MiddleName;
+                _session.Department = user.Department;
+                _session.Email = user.Email;
+                _session.Phone = user.Phone;
+                _session.FullName = string.Format("{0} {1} {2}", user.LastName, user.FirstName, user.MiddleName).Trim();
 
-                var cmd = new NpgsqlCommand(sql, conn);
-
-                cmd.Parameters.AddWithValue("ln", LastNameBox.Text);
-                cmd.Parameters.AddWithValue("fn", FirstNameBox.Text);
-                cmd.Parameters.AddWithValue("mn", MiddleNameBox.Text);
-                cmd.Parameters.AddWithValue("em", EmailBox.Text);
-                cmd.Parameters.AddWithValue("ph", PhoneBox.Text);
-                cmd.Parameters.AddWithValue("id", userId);
-
-                cmd.ExecuteNonQuery();
+                MessageBox.Show("Профиль обновлён.", "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+                DialogResult = true;
+                Close();
             }
-
-            MessageBox.Show("Данные успешно обновлены");
-
-            this.Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось сохранить профиль: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
-}

@@ -1,120 +1,120 @@
 ﻿<Window x:Class="akbars.Views.Worker.MainWorker"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Ак Барс Мед — Сотрудник"
+        Title="Ак Барс Мед | Сотрудник"
+        Width="1240"
+        Height="820"
         WindowStartupLocation="CenterScreen">
-
-    <Grid Margin="30">
-
+    <Grid Margin="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Верхняя часть -->
-        <StackPanel Grid.Row="0">
-
-            <Border Style="{StaticResource LogoPanel}">
-                <Image Source="/Resources/icon.png"
-                       Height="90"
-                       HorizontalAlignment="Center"/>
-            </Border>
-
-            <TextBlock x:Name="HelloText"
-                       Style="{StaticResource TitleText}"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,20"/>
-
-        </StackPanel>
-
-        <!-- Основная часть -->
-        <Grid Grid.Row="1">
-
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Левая часть (информация) -->
-            <Border Style="{StaticResource CardStyle}"
-        Margin="0,0,20,0">
+            <StackPanel>
+                <TextBlock x:Name="HelloText" Style="{StaticResource TitleText}" Margin="0,0,0,8"/>
+                <TextBlock x:Name="RoleHintText" Style="{StaticResource SubtitleText}"/>
+            </StackPanel>
 
-                <StackPanel>
-
-                    <TextBlock Text="Информация о сотруднике"
-                   Style="{StaticResource TitleText}"
-                   Margin="0,0,0,20"/>
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="Фамилия:" Grid.Row="0"/>
-                        <TextBlock x:Name="LastNameText" Grid.Row="0" Grid.Column="1"/>
-
-                        <TextBlock Text="Имя:" Grid.Row="1"/>
-                        <TextBlock x:Name="FirstNameText" Grid.Row="1" Grid.Column="1"/>
-
-                        <TextBlock Text="Отчество:" Grid.Row="2"/>
-                        <TextBlock x:Name="MiddleNameText" Grid.Row="2" Grid.Column="1"/>
-
-                        <TextBlock Text="Email:" Grid.Row="3"/>
-                        <TextBlock x:Name="EmailText" Grid.Row="3" Grid.Column="1"/>
-
-                        <TextBlock Text="Телефон:" Grid.Row="4"/>
-                        <TextBlock x:Name="PhoneText" Grid.Row="4" Grid.Column="1"/>
-
-                        <TextBlock Text="Отдел:" Grid.Row="5"/>
-                        <TextBlock x:Name="DepartmentText" Grid.Row="5" Grid.Column="1"/>
-
-                        <TextBlock Text="Роль:" Grid.Row="6"/>
-                        <TextBlock x:Name="RoleText" Grid.Row="6" Grid.Column="1"/>
-
-                    </Grid>
-
-                </StackPanel>
-
-            </Border>
-
-            <!-- Правая часть (кнопки) -->
-            <Border Grid.Column="1"
-                    Style="{StaticResource CardStyle}">
-
-                <StackPanel>
-
-                    <TextBlock Text="Действия"
-                               Style="{StaticResource TitleText}"/>
-
-                    <Button Content="Изменить информацию"
-                            Click="EditProfile_Click"/>
-
-                    <Button Content="Мои заявки"
-                            Click="Tickets_Click"/>
-
-                   
-
-                    <Button Content="Выйти"
-                            Click="Logout_Click"/>
-
-                </StackPanel>
-
-            </Border>
-
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Style="{StaticResource SecondaryButtonStyle}" Content="Профиль" Width="120" Click="EditProfile_Click"/>
+                <Button Content="Мои заявки" Width="140" Click="Tickets_Click"/>
+                <Button Style="{StaticResource DangerButtonStyle}" Content="Выйти" Width="120" Click="Logout_Click"/>
+            </StackPanel>
         </Grid>
 
-    </Grid>
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,20,0,16">
+            <Border Style="{StaticResource MetricCardStyle}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="Всего заявок" Style="{StaticResource SubtitleText}"/>
+                    <TextBlock x:Name="TotalTicketsText" FontSize="32" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource MetricCardStyle}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="Новые" Style="{StaticResource SubtitleText}"/>
+                    <TextBlock x:Name="NewTicketsText" FontSize="32" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource MetricCardStyle}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="В работе" Style="{StaticResource SubtitleText}"/>
+                    <TextBlock x:Name="InProgressTicketsText" FontSize="32" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource MetricCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Закрыто" Style="{StaticResource SubtitleText}"/>
+                    <TextBlock x:Name="CompletedTicketsText" FontSize="32" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
 
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="1.8*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,18,0">
+                <StackPanel>
+                    <TextBlock Text="Профиль сотрудника" Style="{StaticResource SectionTitleText}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="ФИО" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="FullNameText" Grid.Column="1" Margin="0,0,0,12"/>
+
+                        <TextBlock Grid.Row="1" Text="Email" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="EmailText" Grid.Row="1" Grid.Column="1" Margin="0,0,0,12"/>
+
+                        <TextBlock Grid.Row="2" Text="Телефон" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="PhoneText" Grid.Row="2" Grid.Column="1" Margin="0,0,0,12"/>
+
+                        <TextBlock Grid.Row="3" Text="Отдел" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="DepartmentText" Grid.Row="3" Grid.Column="1" Margin="0,0,0,12"/>
+
+                        <TextBlock Grid.Row="4" Text="Роль" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock x:Name="RoleText" Grid.Row="4" Grid.Column="1" Margin="0,0,0,12"/>
+
+                        <TextBlock Grid.Row="5" Text="Подсказка" Style="{StaticResource FieldLabelStyle}"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="Используйте «Мои заявки» для создания, отслеживания и удаления неназначенных заявок." Style="{StaticResource SubtitleText}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Что доступно сейчас" Style="{StaticResource SectionTitleText}"/>
+                    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="14" Padding="16" Margin="0,0,0,12">
+                        <TextBlock Text="1. Создать новую заявку с кратким и полным описанием."/>
+                    </Border>
+                    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="14" Padding="16" Margin="0,0,0,12">
+                        <TextBlock Text="2. Отследить статус, приоритет и историю изменений по каждой своей заявке."/>
+                    </Border>
+                    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="14" Padding="16">
+                        <TextBlock Text="3. Поддерживать контактные данные в актуальном состоянии для корректной обратной связи."/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </Window>

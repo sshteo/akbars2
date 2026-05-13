@@ -18,6 +18,8 @@ namespace akbars.Models
 
         public string Email { get; set; }
 
+        public string Phone { get; set; }
+
         public string Login { get; set; }
 
         public string PasswordHash { get; set; }
@@ -25,5 +27,18 @@ namespace akbars.Models
         public int RoleId { get; set; }
 
         public string Department { get; set; }
+
+        public string RoleName { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                var parts = new[] { LastName, FirstName, MiddleName }
+                    .Where(part => !string.IsNullOrWhiteSpace(part));
+
+                return string.Join(" ", parts);
+            }
+        }
     }
 }

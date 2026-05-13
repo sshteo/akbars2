@@ -1,72 +1,58 @@
-﻿using akbars.Views.Admin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
+﻿using System.Windows;
+using akbars.Models;
+using akbars.Services;
+using akbars.Views;
+using akbars.Views.Dispatcher;
 
 namespace akbars.Views.Worker
 {
     public partial class MainWorker : Window
     {
-        public MainWorker(
-            string lastName,
-            string firstName,
-            string middleName,
-            string email,
-            string phone,
-            string department,
-            string role)
+        private readonly SessionContext _session;
+
+        public MainWorker(SessionContext session)
         {
             InitializeComponent();
-
-            HelloText.Text = $"Привет, {lastName} {firstName}!";
-
-            LastNameText.Text = lastName;
-            FirstNameText.Text = firstName;
-            MiddleNameText.Text = middleName;
-
-            EmailText.Text = email;
-            PhoneText.Text = phone;
-
-            DepartmentText.Text = department;
-            RoleText.Text = role;
+            _session = session;
+            RefreshDashboard();
         }
 
+        private void RefreshDashboard()
+        {
+            var stats = AppServices.TicketService.GetStatistics(_session.UserId, null);
 
+            HelloText.Text = "Здравствуйте, " + _session.FirstName + ".";
+            RoleHintText.Text = "Ваш контур: создание и отслеживание сервисных заявок.";
+            FullNameText.Text = _session.FullName;
+            EmailText.Text = _session.Email;
+            PhoneText.Text = string.IsNullOrWhiteSpace(_session.Phone) ? "Не указан" : _session.Phone;
+            DepartmentText.Text = string.IsNullOrWhiteSpace(_session.Department) ? "Не указан" : _session.Department;
+            RoleText.Text = _session.RoleName;
+
+            TotalTicketsText.Text = stats.Total.ToString();
+            NewTicketsText.Text = stats.NewCount.ToString();
+            InProgressTicketsText.Text = stats.InProgressCount.ToString();
+            CompletedTicketsText.Text = stats.CompletedCount.ToString();
+        }
 
         private void Tickets_Click(object sender, RoutedEventArgs e)
         {
-            // Получи userId откуда-то (из настроек/поля/сессии)
-            int currentUserId = 1; // или Properties.Settings.Default.UserId
-
-            TicketsWorker ticketsWindow = new TicketsWorker(currentUserId);
-            ticketsWindow.Show();
-         //   this.Close();
-        }
-
-
-
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            Main mainWindow = new Main();
-            mainWindow.Show();
-            this.Close();
+            new TicketsWorker(_session).ShowDialog();
+            RefreshDashboard();
         }
 
         private void EditProfile_Click(object sender, RoutedEventArgs e)
         {
+            var editor = new EditProfileDispetcher(_session);
+            editor.Owner = this;
+            editor.ShowDialog();
+            RefreshDashboard();
+        }
 
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            AppServices.CurrentSession = null;
+            new Main().Show();
+            Close();
         }
     }
-}

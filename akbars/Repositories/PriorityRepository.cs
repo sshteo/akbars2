@@ -1,46 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Collections.Generic;
 using akbars.Data;
 using akbars.Models;
 using Npgsql;
-using System.Collections.Generic;
 
 namespace akbars.Repositories
 {
-    public class PriorityRepository
+    public class PriorityRepository : RepositoryBase, IPriorityRepository
     {
-        private readonly Database _database = new Database();
+        public PriorityRepository(Database database) : base(database)
+        {
+        }
 
         public List<Priority> GetPriorities()
         {
-            var list = new List<Priority>();
+            var priorities = new List<Priority>();
 
-            using (var conn = _database.GetConnection())
+            using (var conn = Database.GetConnection())
             {
                 conn.Open();
-
-                string sql = "SELECT id, name, sla_hours FROM priorities";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
+                using (var cmd = new NpgsqlCommand("SELECT id, name, sla_hours FROM priorities ORDER BY id", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        list.Add(new Priority
+                        priorities.Add(new Priority
                         {
                             Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            SlaHours = reader.GetInt32(2)
+                            Name = ReadNullableString(reader, 1),
+                            SlaHours = reader.IsDBNull(2) ? 0 : reader.GetInt32(2)
                         });
                     }
                 }
             }
 
-            return list;
+            return priorities;
+        }
+
+        public void AddPriority(string name, int slaHours)
+        {
+            using (var conn = Database.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand(
+                    "INSERT INTO priorities (name, sla_hours) VALUES (@name, @slaHours)", conn))
+                {
+                    cmd.Parameters.AddWithValue("name", name);
+                    cmd.Parameters.AddWithValue("slaHours", slaHours);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
     }
-}

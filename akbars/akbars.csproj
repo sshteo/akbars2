@@ -39,9 +39,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SavedLogin|AnyCPU'">
     <OutputPath>bin\SavedLogin\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SavedPassword|AnyCPU'">
-    <OutputPath>bin\SavedPassword\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -133,15 +130,23 @@
     </Compile>
     <Compile Include="Data\Database.cs" />
     <Compile Include="Models\Attachment.cs" />
+    <Compile Include="Models\AuthResult.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Priority.cs" />
     <Compile Include="Models\Role.cs">
       <Generator>MSBuild:Compile</Generator>
     </Compile>
+    <Compile Include="Models\SessionContext.cs" />
     <Compile Include="Models\Status.cs" />
+    <Compile Include="Models\TicketDetails.cs" />
+    <Compile Include="Models\TicketListItem.cs" />
+    <Compile Include="Models\TicketQuery.cs" />
+    <Compile Include="Models\TicketStatistics.cs" />
     <Compile Include="Models\TicketHistory.cs" />
     <Compile Include="Models\TicketType.cs" />
+    <Compile Include="Repositories\Contracts.cs" />
     <Compile Include="Repositories\PriorityRepository.cs" />
+    <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\User.cs" />
@@ -149,6 +154,15 @@
     <Compile Include="Repositories\TicketRepository.cs" />
     <Compile Include="Repositories\TicketTypeRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Services\AppServices.cs" />
+    <Compile Include="Services\AppSettingsService.cs" />
+    <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\Contracts.cs" />
+    <Compile Include="Services\LookupService.cs" />
+    <Compile Include="Services\PasswordHasher.cs" />
+    <Compile Include="Services\TicketService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\WindowFactory.cs" />
     <Compile Include="Views\Admin\MainAdmin.xaml.cs">
       <DependentUpon>MainAdmin.xaml</DependentUpon>
     </Compile>
