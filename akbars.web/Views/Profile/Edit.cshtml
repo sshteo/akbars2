@@ -1,0 +1,38 @@
+@model ProfileEditViewModel
+@{
+    ViewData["Title"] = "Профиль";
+}
+
+<section class="panel narrow">
+    <h1>Профиль</h1>
+    <p class="muted">Изменения сохраняются в общей базе и сразу доступны во всех ролях.</p>
+
+    <form method="post" class="form-stack">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <input asp-for="Id" type="hidden" />
+
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" />
+        <span asp-validation-for="LastName" class="field-error"></span>
+
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" />
+        <span asp-validation-for="FirstName" class="field-error"></span>
+
+        <label asp-for="MiddleName"></label>
+        <input asp-for="MiddleName" />
+
+        <label asp-for="Department"></label>
+        <input asp-for="Department" />
+
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" />
+
+        <button type="submit" class="button">Сохранить</button>
+    </form>
+</section>

@@ -1,0 +1,44 @@
+@model EmployeeDashboardViewModel
+@{
+    ViewData["Title"] = "Панель сотрудника";
+}
+
+<section class="page-head">
+    <div>
+        <h1>Здравствуйте, @Model.Session.FirstName.</h1>
+        <p class="muted">Ваш контур: создание и отслеживание сервисных заявок.</p>
+    </div>
+    <div class="action-row">
+        <a class="button button-secondary" asp-controller="Profile" asp-action="Edit">Профиль</a>
+        <a class="button" asp-controller="Tickets" asp-action="My">Мои заявки</a>
+    </div>
+</section>
+
+<section class="metrics-grid">
+    <article class="metric-card"><span>Всего заявок</span><strong>@Model.Stats.Total</strong></article>
+    <article class="metric-card"><span>Новые</span><strong>@Model.Stats.NewCount</strong></article>
+    <article class="metric-card"><span>В работе</span><strong>@Model.Stats.InProgressCount</strong></article>
+    <article class="metric-card"><span>Закрыто</span><strong>@Model.Stats.CompletedCount</strong></article>
+</section>
+
+<section class="content-grid">
+    <article class="panel">
+        <h2>Профиль сотрудника</h2>
+        <dl class="details-grid">
+            <dt>ФИО</dt><dd>@Model.Session.FullName</dd>
+            <dt>Email</dt><dd>@(string.IsNullOrWhiteSpace(Model.Session.Email) ? "Не указан" : Model.Session.Email)</dd>
+            <dt>Телефон</dt><dd>@(string.IsNullOrWhiteSpace(Model.Session.Phone) ? "Не указан" : Model.Session.Phone)</dd>
+            <dt>Отдел</dt><dd>@(string.IsNullOrWhiteSpace(Model.Session.Department) ? "Не указан" : Model.Session.Department)</dd>
+            <dt>Роль</dt><dd>@Model.Session.RoleName</dd>
+        </dl>
+    </article>
+
+    <article class="panel">
+        <h2>Что доступно сейчас</h2>
+        <div class="stack-list">
+            <div class="soft-card">Создание новой заявки с кратким и полным описанием.</div>
+            <div class="soft-card">Отслеживание статуса, приоритета и истории изменений.</div>
+            <div class="soft-card">Удаление только неназначенных заявок, созданных вами.</div>
+        </div>
+    </article>
+</section>

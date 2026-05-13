@@ -1,0 +1,73 @@
+@using akbars.Extensions
+@{
+    var appRole = User.Identity?.IsAuthenticated == true
+        ? User.Claims.FirstOrDefault(claim => claim.Type == System.Security.Claims.ClaimTypes.Role)?.Value ?? string.Empty
+        : string.Empty;
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Ак Барс Мед</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="shell">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <header class="topbar">
+                <div>
+                    <a class="brand" asp-controller="Dashboard" asp-action="Index">Ак Барс Мед</a>
+                    <p class="topbar-subtitle">Кроссплатформенный веб-контур service desk</p>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="button button-danger" type="submit">Выйти</button>
+                </form>
+            </header>
+
+            <nav class="nav-tabs">
+                @if (appRole == RoleNames.Employee)
+                {
+                    <a asp-controller="Dashboard" asp-action="Employee">Панель</a>
+                    <a asp-controller="Tickets" asp-action="My">Мои заявки</a>
+                    <a asp-controller="Tickets" asp-action="Create">Новая заявка</a>
+                    <a asp-controller="Profile" asp-action="Edit">Профиль</a>
+                }
+                else if (appRole == RoleNames.Executor)
+                {
+                    <a asp-controller="Dashboard" asp-action="Executor">Панель</a>
+                    <a asp-controller="Tickets" asp-action="Assigned">Назначенные</a>
+                    <a asp-controller="Profile" asp-action="Edit">Профиль</a>
+                }
+                else if (appRole == RoleNames.Dispatcher)
+                {
+                    <a asp-controller="Dashboard" asp-action="Dispatcher">Панель</a>
+                    <a asp-controller="Tickets" asp-action="Queue">Очередь</a>
+                    <a asp-controller="Tickets" asp-action="Employees">Сотрудники</a>
+                    <a asp-controller="Tickets" asp-action="Executors">Исполнители</a>
+                    <a asp-controller="Profile" asp-action="Edit">Профиль</a>
+                }
+                else if (appRole == RoleNames.Admin)
+                {
+                    <a asp-controller="Admin" asp-action="Index">Администрирование</a>
+                    <a asp-controller="Profile" asp-action="Edit">Профиль</a>
+                }
+            </nav>
+        }
+
+        <main class="content">
+            @if (TempData["Success"] is string successMessage)
+            {
+                <div class="alert alert-success">@successMessage</div>
+            }
+            @if (TempData["Error"] is string errorMessage)
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>

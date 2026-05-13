@@ -1,0 +1,47 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="login-grid">
+    <div class="hero-panel">
+        <p class="eyebrow">Service Desk</p>
+        <h1>Внутренний сервисный центр Ак Барс Мед</h1>
+        <p class="hero-copy">Единая точка входа для сотрудников, диспетчеров, исполнителей и администраторов. Веб-версия открывается на Windows, macOS, Linux и мобильных устройствах.</p>
+
+        <div class="hero-list">
+            <div>Защищенный вход и работа с PostgreSQL</div>
+            <div>Очередь заявок, карточки и история изменений</div>
+            <div>Ролевые панели и адаптивный интерфейс</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Вход в сервисный контур</h2>
+        <p class="muted">Введите корпоративный логин и пароль.</p>
+
+        <div class="status-box @(Model.SystemAvailable ? "status-ok" : "status-bad")">
+            @Model.SystemStatus
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <form method="post" class="form-stack">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <label asp-for="Login"></label>
+            <input asp-for="Login" />
+            <span asp-validation-for="Login" class="field-error"></span>
+
+            <label asp-for="Password"></label>
+            <input asp-for="Password" />
+            <span asp-validation-for="Password" class="field-error"></span>
+
+            <button type="submit" class="button">Войти</button>
+        </form>
+    </div>
+</section>

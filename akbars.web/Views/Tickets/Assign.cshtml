@@ -1,0 +1,31 @@
+@model AssignTicketViewModel
+@{
+    ViewData["Title"] = "Назначение исполнителя";
+}
+
+<section class="panel narrow">
+    <h1>Назначение исполнителя</h1>
+    <p class="muted">Заявка #@Model.TicketId: @Model.TicketSummary</p>
+
+    <form method="post" class="form-stack">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <input asp-for="TicketId" type="hidden" />
+
+        <label asp-for="ExecutorId">Исполнитель</label>
+        <select asp-for="ExecutorId">
+            <option value="">Выберите исполнителя</option>
+            @foreach (var item in Model.Executors)
+            {
+                <option value="@item.Id">@item.FullName</option>
+            }
+        </select>
+        <span asp-validation-for="ExecutorId" class="field-error"></span>
+
+        <div class="action-row">
+            <button type="submit" class="button">Назначить</button>
+            <a class="button button-secondary" asp-action="Queue">Назад</a>
+        </div>
+    </form>
+</section>

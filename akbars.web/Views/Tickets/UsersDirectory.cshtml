@@ -1,0 +1,41 @@
+@model List<User>
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Каталог";
+}
+
+<section class="page-head">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p class="muted">@ViewData["Subtitle"]</p>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th>Email</th>
+                    <th>Телефон</th>
+                    <th>Отдел</th>
+                    <th>Роль</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FullName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Phone</td>
+                    <td>@item.Department</td>
+                    <td>@item.RoleName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,139 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Администрирование";
+}
+
+<section class="page-head">
+    <div>
+        <h1>Здравствуйте, @Model.Session.FirstName.</h1>
+        <p class="muted">Роли пользователей и справочники заявок.</p>
+    </div>
+</section>
+
+<section class="metrics-grid">
+    <article class="metric-card"><span>Пользователей</span><strong>@Model.Users.Count</strong></article>
+    <article class="metric-card"><span>Сотрудников</span><strong>@Model.Users.Count(item => item.RoleId == 1)</strong></article>
+    <article class="metric-card"><span>Исполнителей</span><strong>@Model.Users.Count(item => item.RoleId == 2)</strong></article>
+    <article class="metric-card"><span>Заявок</span><strong>@Model.Stats.Total</strong></article>
+</section>
+
+<section class="panel">
+    <h2>Пользователи</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th>Логин</th>
+                    <th>Email</th>
+                    <th>Отдел</th>
+                    <th>Роль</th>
+                    <th>Обновить роль</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.FullName</td>
+                    <td>@user.Login</td>
+                    <td>@user.Email</td>
+                    <td>@user.Department</td>
+                    <td>@user.RoleName</td>
+                    <td>
+                        <form asp-action="UpdateRole" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="UserId" value="@user.Id" />
+                            <select name="RoleId">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    if (role.Id == user.RoleId)
+                                    {
+                                        <option value="@role.Id" selected="selected">@role.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@role.Id">@role.Name</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit" class="button button-secondary button-inline">Сохранить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="three-col">
+    <article class="panel">
+        <h2>Приоритеты</h2>
+        <div class="table-wrapper compact-table">
+            <table>
+                <thead><tr><th>ID</th><th>Название</th><th>SLA</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.Priorities)
+                {
+                    <tr><td>@item.Id</td><td>@item.Name</td><td>@item.SlaHours</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <form asp-action="AddPriority" method="post" class="form-stack">
+            @Html.AntiForgeryToken()
+            <label>Название</label>
+            <input name="Name" />
+            <label>SLA часов</label>
+            <input name="SlaHours" type="number" min="1" />
+            <button type="submit" class="button">Добавить приоритет</button>
+        </form>
+    </article>
+
+    <article class="panel">
+        <h2>Статусы</h2>
+        <div class="table-wrapper compact-table">
+            <table>
+                <thead><tr><th>ID</th><th>Название</th><th>Описание</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.Statuses)
+                {
+                    <tr><td>@item.Id</td><td>@item.Name</td><td>@item.Description</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <form asp-action="AddStatus" method="post" class="form-stack">
+            @Html.AntiForgeryToken()
+            <label>Название</label>
+            <input name="Name" />
+            <label>Описание</label>
+            <input name="Description" />
+            <button type="submit" class="button">Добавить статус</button>
+        </form>
+    </article>
+
+    <article class="panel">
+        <h2>Типы заявок</h2>
+        <div class="table-wrapper compact-table">
+            <table>
+                <thead><tr><th>ID</th><th>Название</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.TicketTypes)
+                {
+                    <tr><td>@item.Id</td><td>@item.Name</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <form asp-action="AddType" method="post" class="form-stack">
+            @Html.AntiForgeryToken()
+            <label>Название</label>
+            <input name="Name" />
+            <button type="submit" class="button">Добавить тип</button>
+        </form>
+    </article>
+</section>

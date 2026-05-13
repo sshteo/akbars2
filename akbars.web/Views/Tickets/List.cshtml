@@ -1,0 +1,111 @@
+@model TicketListViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="page-head">
+    <div>
+        <h1>@Model.Title</h1>
+        <p class="muted">@Model.Subtitle</p>
+    </div>
+    @if (Model.AllowCreate)
+    {
+        <div class="action-row">
+            <a class="button" asp-action="Create">Новая заявка</a>
+        </div>
+    }
+</section>
+
+<section class="panel">
+    <form method="get" class="filters-grid">
+        <div>
+            <label>Поиск</label>
+            <input type="text" name="searchText" value="@Model.SearchText" />
+        </div>
+        <div>
+            <label>Статус</label>
+            <select name="statusName">
+                <option value="">Все</option>
+                @foreach (var status in Model.StatusOptions)
+                {
+                    if (status == Model.StatusName)
+                    {
+                        <option value="@status" selected="selected">@status</option>
+                    }
+                    else
+                    {
+                        <option value="@status">@status</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>Приоритет</label>
+            <select name="priorityName">
+                <option value="">Все</option>
+                @foreach (var priority in Model.PriorityOptions)
+                {
+                    if (priority == Model.PriorityName)
+                    {
+                        <option value="@priority" selected="selected">@priority</option>
+                    }
+                    else
+                    {
+                        <option value="@priority">@priority</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="filters-actions">
+            <button type="submit" class="button">Применить</button>
+        </div>
+    </form>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Обновлена</th>
+                    <th>Описание</th>
+                    <th>Автор</th>
+                    <th>Исполнитель</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Tickets)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.ShortDescription</td>
+                    <td>@item.AuthorName</td>
+                    <td>@(string.IsNullOrWhiteSpace(item.AssigneeName) ? "Не назначен" : item.AssigneeName)</td>
+                    <td>@item.PriorityName</td>
+                    <td>@item.StatusName</td>
+                    <td>
+                        <div class="table-actions">
+                            <a class="button button-secondary button-inline" asp-action="Details" asp-route-id="@item.Id">Открыть</a>
+                            @if (Model.AllowAssign)
+                            {
+                                <a class="button button-inline" asp-action="Assign" asp-route-id="@item.Id">Назначить</a>
+                            }
+                            @if (Model.AllowDelete)
+                            {
+                                <form asp-action="Delete" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="button button-danger button-inline" type="submit">Удалить</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,70 @@
+@model TicketDetailsViewModel
+@{
+    ViewData["Title"] = "Заявка #" + Model.Ticket.Id;
+}
+
+<section class="page-head">
+    <div>
+        <h1>Заявка #@Model.Ticket.Id</h1>
+        <p class="muted">Полная карточка заявки с историей изменений и контекстом исполнения.</p>
+    </div>
+</section>
+
+<section class="content-grid">
+    <article class="panel">
+        <h2>Карточка</h2>
+        <dl class="details-grid">
+            <dt>Статус</dt><dd>@Model.Ticket.StatusName</dd>
+            <dt>Приоритет</dt><dd>@Model.Ticket.PriorityName</dd>
+            <dt>Тип</dt><dd>@Model.Ticket.TypeName</dd>
+            <dt>Автор</dt><dd>@(string.IsNullOrWhiteSpace(Model.Ticket.AuthorName) ? "Не указан" : Model.Ticket.AuthorName)</dd>
+            <dt>Исполнитель</dt><dd>@(string.IsNullOrWhiteSpace(Model.Ticket.AssigneeName) ? "Не назначен" : Model.Ticket.AssigneeName)</dd>
+            <dt>Создана</dt><dd>@Model.Ticket.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+            <dt>Обновлена</dt><dd>@Model.Ticket.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+            <dt>Завершение</dt><dd>@(Model.Ticket.CompletedAt.HasValue ? Model.Ticket.CompletedAt.Value.ToString("dd.MM.yyyy HH:mm") : "Еще не зафиксировано")</dd>
+        </dl>
+
+        <div class="soft-card">
+            <strong>@Model.Ticket.ShortDescription</strong>
+            <p>@(string.IsNullOrWhiteSpace(Model.Ticket.DetailedDescription) ? "Подробности не указаны." : Model.Ticket.DetailedDescription)</p>
+        </div>
+    </article>
+
+    <article class="panel">
+        <h2>История</h2>
+        @if (Model.Ticket.History.Count == 0)
+        {
+            <div class="soft-card">История изменений не найдена или таблица истории отсутствует в схеме.</div>
+        }
+        else
+        {
+            <ul class="timeline">
+                @foreach (var item in Model.Ticket.History)
+                {
+                    <li>
+                        <strong>@item.ChangedAt.ToString("dd.MM.yyyy HH:mm")</strong>
+                        <span>@item.FieldName: @(string.IsNullOrWhiteSpace(item.OldValue) ? "—" : item.OldValue) -> @(string.IsNullOrWhiteSpace(item.NewValue) ? "—" : item.NewValue)</span>
+                    </li>
+                }
+            </ul>
+        }
+    </article>
+</section>
+
+@if (Model.AllowStatusActions)
+{
+    <section class="panel narrow">
+        <h2>Действия исполнителя</h2>
+        <form asp-action="ChangeStatus" method="post" class="form-stack">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Ticket.Id" />
+            <label for="actionNote">Комментарий</label>
+            <textarea id="actionNote" name="actionNote" rows="4">@Model.ActionNote</textarea>
+            <div class="action-row">
+                <button class="button button-secondary" type="submit" name="actionName" value="start">В работу</button>
+                <button class="button" type="submit" name="actionName" value="complete">Завершить</button>
+                <button class="button button-danger" type="submit" name="actionName" value="cancel">Отменить</button>
+            </div>
+        </form>
+    </section>
+}

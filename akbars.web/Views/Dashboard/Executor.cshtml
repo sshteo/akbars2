@@ -1,0 +1,55 @@
+@model ExecutorDashboardViewModel
+@{
+    ViewData["Title"] = "Панель исполнителя";
+}
+
+<section class="page-head">
+    <div>
+        <h1>Здравствуйте, @Model.Session.FirstName.</h1>
+        <p class="muted">Ваш рабочий контур: взять заявку, довести до результата, зафиксировать статус и комментарий.</p>
+    </div>
+    <div class="action-row">
+        <a class="button button-secondary" asp-controller="Profile" asp-action="Edit">Профиль</a>
+        <a class="button" asp-controller="Tickets" asp-action="Assigned">Назначенные заявки</a>
+    </div>
+</section>
+
+<section class="metrics-grid">
+    <article class="metric-card"><span>Назначено</span><strong>@Model.Stats.Total</strong></article>
+    <article class="metric-card"><span>В работе</span><strong>@Model.Stats.InProgressCount</strong></article>
+    <article class="metric-card"><span>Завершено</span><strong>@Model.Stats.CompletedCount</strong></article>
+    <article class="metric-card metric-warn"><span>Просрочка</span><strong>@Model.Stats.OverdueCount</strong></article>
+</section>
+
+<section class="panel">
+    <h2>Последние назначенные заявки</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Обновлена</th>
+                    <th>Описание</th>
+                    <th>Автор</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Tickets.Take(8))
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.UpdatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.ShortDescription</td>
+                    <td>@item.AuthorName</td>
+                    <td>@item.PriorityName</td>
+                    <td>@item.StatusName</td>
+                    <td><a class="button button-secondary button-inline" asp-controller="Tickets" asp-action="Details" asp-route-id="@item.Id">Открыть</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,46 @@
+@model CreateTicketViewModel
+@{
+    ViewData["Title"] = "Новая заявка";
+}
+
+<section class="panel narrow">
+    <h1>Новая заявка</h1>
+    <p class="muted">Форма адаптирована для телефона: поля идут одной колонкой, действия доступны без горизонтальной прокрутки.</p>
+
+    <form method="post" class="form-stack">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <label asp-for="ShortDescription"></label>
+        <input asp-for="ShortDescription" />
+        <span asp-validation-for="ShortDescription" class="field-error"></span>
+
+        <label asp-for="DetailedDescription"></label>
+        <textarea asp-for="DetailedDescription" rows="6"></textarea>
+
+        <label asp-for="TypeId"></label>
+        <select asp-for="TypeId">
+            <option value="">Выберите тип</option>
+            @foreach (var type in Model.TicketTypes)
+            {
+                <option value="@type.Id">@type.Name</option>
+            }
+        </select>
+        <span asp-validation-for="TypeId" class="field-error"></span>
+
+        <label asp-for="PriorityId"></label>
+        <select asp-for="PriorityId">
+            <option value="">Выберите приоритет</option>
+            @foreach (var priority in Model.Priorities)
+            {
+                <option value="@priority.Id">@priority.Name</option>
+            }
+        </select>
+        <span asp-validation-for="PriorityId" class="field-error"></span>
+
+        <div class="action-row">
+            <button type="submit" class="button">Создать заявку</button>
+            <a class="button button-secondary" asp-action="My">Назад</a>
+        </div>
+    </form>
+</section>

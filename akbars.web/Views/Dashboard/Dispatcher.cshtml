@@ -1,0 +1,59 @@
+@model DispatcherDashboardViewModel
+@{
+    ViewData["Title"] = "Панель диспетчера";
+}
+
+<section class="page-head">
+    <div>
+        <h1>Здравствуйте, @Model.Session.FirstName.</h1>
+        <p class="muted">Оперативный контур: triage, очереди, назначение исполнителей и мониторинг просрочки.</p>
+    </div>
+    <div class="action-row">
+        <a class="button button-secondary" asp-controller="Profile" asp-action="Edit">Профиль</a>
+        <a class="button" asp-controller="Tickets" asp-action="Queue">Очередь заявок</a>
+    </div>
+</section>
+
+<section class="metrics-grid metrics-grid-wide">
+    <article class="metric-card"><span>Всего</span><strong>@Model.Stats.Total</strong></article>
+    <article class="metric-card"><span>Новые</span><strong>@Model.Stats.NewCount</strong></article>
+    <article class="metric-card"><span>В работе</span><strong>@Model.Stats.InProgressCount</strong></article>
+    <article class="metric-card"><span>Выполнено</span><strong>@Model.Stats.CompletedCount</strong></article>
+    <article class="metric-card metric-warn"><span>SLA риск</span><strong>@Model.Stats.OverdueCount</strong></article>
+</section>
+
+<section class="content-grid">
+    <article class="panel">
+        <h2>Операционный обзор</h2>
+        <p class="muted">Используйте очередь заявок для назначения исполнителей и контроля статусов.</p>
+        <div class="action-row">
+            <a class="button button-secondary" asp-controller="Tickets" asp-action="Employees">Сотрудники</a>
+            <a class="button button-secondary" asp-controller="Tickets" asp-action="Executors">Исполнители</a>
+        </div>
+        <div class="soft-card">SLA риск рассчитывается по правилу `created_at + priorities.sla_hours` для незакрытых заявок.</div>
+    </article>
+
+    <article class="panel">
+        <h2>Каталоги</h2>
+        <div class="split-list">
+            <div>
+                <h3>Сотрудники</h3>
+                <ul class="simple-list">
+                    @foreach (var item in Model.Employees.Take(5))
+                    {
+                        <li>@item.FullName</li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h3>Исполнители</h3>
+                <ul class="simple-list">
+                    @foreach (var item in Model.Executors.Take(5))
+                    {
+                        <li>@item.FullName</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </article>
+</section>
